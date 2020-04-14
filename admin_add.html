@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>添加管理员账号。</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>添加管理员账号</span>
+						</div>
+						<div class="text item" id="admin_add">
+							<p><span>*</span> 用户名：<el-input v-model="username" placeholder="请输入用户名" size="small"></el-input>
+							</p>
+							<p><span>*</span> 密码：<el-input type="password" placeholder="请输入密码" size="small" v-model="password"></el-input>
+							</p>
+							<p><span>*</span> 确认密码：<el-input type="password" placeholder="请确认密码" size="small" v-model="password2"></el-input>
+							</p>
+							<p>
+								<span>*</span> 请选择用户组：
+								<el-select v-model="usergroup" placeholder="请选择" size="small">
+									<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+							</p>
+							<p>
+								<el-button type="primary" @click="admin_add">添加</el-button>
+							</p>
+						</div>
+					</el-card>
+				</el-main>
+
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					options: [{
+						value: '超级管理员',
+						label: '超级管理员'
+					}, {
+						value: '普通管理员',
+						label: '普通管理员'
+					}, {
+						value: '普通员工',
+						label: '普通员工'
+					}],
+					usergroup: '',
+					username: '',
+					password: '',
+					password2: ''
+				},
+				methods: {
+					admin_add: function() {
+						usergroup = this.usergroup;
+						username = this.username;
+						password = this.password;
+						ajax({
+							type: 'post',
+							url: '/api/admin_save_add.php',
+							data: `username=${username}&password=${password}&usergroup=${usergroup}`,
+							dataTypt: 'text',
+							success: function(data){
+								if (data == 1) {
+									alert('新增成功！');
+									location.href = '/admin_list.html';
+								}else {
+									alert('新增失败！');
+								}
+							}
+							
+						})
+						
+						// var ajax = new XMLHttpRequest();
+						// ajax.open('post', '/api/admin_save_add.php');
+						// ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+						// ajax.send(`username=${username}&password=${password}&usergroup=${usergroup}`);
+						// ajax.onreadystatechange = function() {
+						// 	if (ajax.readyState == 4 && ajax.status == 200) {
+						// 		var data = ajax.responseText;
+						// 		console.log(data);
+						// 		if (data == 1) {
+						// 			alert("新增成功！");
+						// 			location.href = '/admin_list.html';
+						// 		} else {
+						// 			alert("新增失败！");
+						// 		}
+						// 	}
+						// }
+
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

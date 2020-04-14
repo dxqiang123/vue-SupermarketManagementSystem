@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>查看所有商品列表</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>商品管理</span>
+						</div>
+						<div class="text item">
+
+							<!-- 搜索框 -->
+							<div id="search">
+								<el-select v-model="cateid" placeholder="请选择分类" size="mini">
+									<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+								<span>关键词：</span>
+								<el-input v-model="keywords" placeholder="请输入商品名称或条形码" size="mini"></el-input>
+								<el-button type="success" size="mini" @click="search">搜索</el-button>
+							</div>
+
+							<!-- 商品列表主体 -->
+							<el-table :data="tableData" style="width: 100%">
+								<el-table-column label="商品条形码">
+									<template slot-scope="scope">
+										<span>{{ scope.row.code }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="商品名称">
+									<template slot-scope="scope">
+										<span>{{ scope.row.name }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="所属分类">
+									<template slot-scope="scope">
+										<span>{{ scope.row.cateid }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="售价(元)">
+									<template slot-scope="scope">
+										<span style="color: #4E9A00;">{{ scope.row.price }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="促销价">
+									<template slot-scope="scope">
+										<span v-if="parseInt(scope.row.saled)">{{ scope.row.price*0.9 }}</span>
+										<span v-else>未促销</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="市场价">
+									<template slot-scope="scope">
+										<span>{{ scope.row.saleprice }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="库存">
+									<template slot-scope="scope">
+										<span>{{ scope.row.num }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="库存总额">
+									<template slot-scope="scope">
+										<span>{{ scope.row.saleprice*scope.row.num }}</span>
+									</template>
+								</el-table-column>
+
+
+
+								<el-table-column label="操作">
+									<template slot-scope="scope">
+										<i class="el-icon-edit" @click="goods_edit(scope.row)" ></i>
+										<i class="el-icon-delete" @click="goods_del(scope.row)"></i>
+									</template>
+								</el-table-column>
+							</el-table>
+							
+							<!-- 分页符 -->
+							<el-pagination
+							  background
+							  layout="prev, pager, next"
+							  :page-count="pagecount"
+								@current-change="changepage">
+							</el-pagination>
+
+						</div>
+					</el-card>
+				</el-main>
+
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					options: [{
+						value: 0,
+						label: '--顶级分类--'
+					}],
+					tableData: [],
+					cateid: '',
+					keywords: '',
+					pagecount: 1
+				},
+				mounted: function() {
+					var _that = this;
+					ajax({
+						url: '/api/goods_page.php',
+						success: function(data) {
+							// console.log(data);
+							_that.pagecount = data.pop();
+							_that.tableData = data;
+						}
+					}),
+					ajax({
+						url: '/api/category_name.php',
+						success: function(data) {
+							_that.options = _that.options.concat(data);
+						}
+					})
+				},
+				methods: {
+					changepage: function(page) {
+						var _that = this;
+						ajax({
+							url: '/api/goods_page.php?page='+ page,
+							success: function(data) {
+								// console.log(data);
+								_that.pagecount = data.pop();
+								_that.tableData = data;
+							}
+						})
+					},
+					search: function(){
+						var _that = this;
+						var cateid = this.cateid;
+						var keywords = this.keywords;
+						ajax({
+							url: '/api/goods_search.php?cateid='+cateid+'&keywords='+keywords,
+							success: function(data) {
+								_that.pagecount = 1;
+								_that.tableData = data;
+								
+							}
+						})
+					}
+				}
+
+			})
+		</script>
+	</body>
+</html>

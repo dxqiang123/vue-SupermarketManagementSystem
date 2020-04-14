@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>修改账号密码</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>修改账号密码</span>
+						</div>
+						<div class="text item" id="admin_add">
+							<p><span>*</span> 原密码：<el-input type="password" v-model="oldPass" placeholder="请输入原密码" size="small"></el-input>
+							</p>
+							<p><span>*</span> 新密码：<el-input type="password" placeholder="请输入新密码" size="small" v-model="newPass"></el-input>
+							</p>
+							<p><span>*</span> 确认新密码：<el-input type="password" placeholder="请再次输入新密码" size="small" v-model="newPass2"></el-input>
+							</p>
+							<p>
+								<el-button type="primary" @click="changePass">修改密码</el-button>
+							</p>
+						</div>
+					</el-card>
+				</el-main>
+				
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					oldPass: '',
+					newPass: '',
+					newPass2: ''
+				},
+				methods: {	
+					// 点击修改按钮执行的函数
+					changePass: function() {
+						var oldPass = this.oldPass;
+						var newPass = this.newPass;
+						ajax({
+							type: 'post',
+							url: '/api/admin_changePass.php',
+							data: `oldPass=${oldPass}&newPass=${newPass}`,
+							success: function(data){
+								// console.log(data);
+								if(data.errcode == 0) {
+									alert(data.msg+"请重新登录！");
+									location.href = 'admin_list.html';
+								}else{
+									alert(data.msg);
+								}
+							}
+						})
+						
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

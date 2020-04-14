@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>查看所有管理员账号。</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>账号管理</span>
+						</div>
+						<div class="text item">
+
+							<el-table :data="tableData" style="width: 100%">
+								<el-table-column label="用户名称" >
+									<template slot-scope="scope">
+										<span>{{ scope.row.username }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="用户组">
+									<template slot-scope="scope">
+										<span>{{ scope.row.usergroup }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="管理">
+									<template slot-scope="scope">
+										<el-button size="mini" @click="admin_edit(scope.row.id)">修改</el-button>
+										<el-button size="mini" type="danger" @click="admin_del(scope.row.id)">删除</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+
+						</div>
+					</el-card>
+				</el-main>
+
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					tableData: []
+				},
+				mounted: function() {
+					this.show();
+				},
+				methods: {
+					// 渲染页面的函数
+					show: function(){
+						var _that = this;	// 将this指向的内存空间，另存到其他变量
+						ajax({
+							url: '/api/admin_all.php',
+							success: function(data) {
+								// console.log(data);
+								_that.tableData = data;
+							}
+						})
+					},
+					// 点击删除按钮执行的函数
+					admin_del: function(id){
+						var _that = this;
+						ajax({
+							url: '/api/admin_del.php?id=' + id,
+							success: function(data) {
+								// console.log(data);
+								if(data.errcode == 0) {
+									alert(data.msg);
+									_that.show();
+								}else{
+									alert(data.msg);
+								}
+							}
+						})
+					},
+					// 点击修改按钮执行的函数
+					admin_edit: function(id) {
+						location.href = 'admin_edit.html?id=' + id;
+						
+	
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

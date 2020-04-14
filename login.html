@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<title>超市管理系统登录</title>
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				height: 100%
+			}
+
+			#app {
+				background: #000;
+				height: 100%;
+			}
+
+			#myform {
+				background: #fff;
+				color: #444;
+				text-align: center;
+				border-radius: 10px;
+				margin-top: 150px;
+				padding: 0 20px 10px;
+			}
+
+			.el-input {
+				margin: 5px 0;
+			}
+			.el-button {
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<el-row>
+				<el-col :span="8" :offset="8" id="myform">
+					<h1>超市管理系统</h1>
+					<el-input placeholder="请输入用户名" prefix-icon="el-icon-user" v-model="username">
+					</el-input>
+
+					<el-input placeholder="请输入密码" type="password" prefix-icon="el-icon-s-goods" suffix-icon="el-icon-view" v-model="password">
+					</el-input>
+					<el-button type="primary" @click="checkLogin">立即登录</el-button>
+				</el-col>
+			</el-row>
+		</div>
+
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					username: '',
+					password: ''
+				},
+				methods: {
+					checkLogin: function() {
+						//获取到用户名和密码
+						var username = this.username;
+						var password = this.password;
+						//构造ajax请求，并且将用户名和密码数据发送到服务器端验证  /api/checkLogin.php
+						var ajax = new XMLHttpRequest();
+						ajax.open('post', '/api/checkLogin.php');
+						ajax.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+						ajax.send('username=' + username + '&password=' + password);
+						ajax.onreadystatechange = function() {
+							if(ajax.readyState == 4 && ajax.status == 200) {
+								var data = ajax.responseText;
+								// 如果返回值是：0-登录失败，1-登录成功
+								if(data == 1) {
+									alert('恭喜你登录成功！');
+									location.href = './index.html';
+								}else{
+									alert('用户名或密码错误，请稍后重试！');
+								}
+							}
+						}
+						
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

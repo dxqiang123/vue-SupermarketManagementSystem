@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>修改管理员账号。</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>修改管理员账号</span>
+						</div>
+						<div class="text item" id="admin_add">
+							<p><span>*</span> 用户名：<el-input v-model="username" placeholder="请输入用户名" size="small"></el-input>
+							</p>
+							<p><span>*</span> 密码：<el-input type="password" placeholder="请输入密码" size="small" v-model="password"></el-input>
+							</p>
+							<p>
+								<span>*</span> 请选择用户组：
+								<el-select v-model="usergroup" placeholder="请选择" size="small">
+									<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+							</p>
+							<p>
+								<el-button type="primary" @click="admin_save_edit">立即修改</el-button>
+							</p>
+						</div>
+					</el-card>
+				</el-main>
+
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					options: [{
+						value: '超级管理员',
+						label: '超级管理员'
+					}, {
+						value: '普通管理员',
+						label: '普通管理员'
+					}, {
+						value: '普通员工',
+						label: '普通员工'
+					}],
+					username: '',
+					password: '',
+					usergroup: ''
+				},
+				mounted: function(){
+					// 获取ID值
+					var id = location.href.split('=')[1];
+					var _that = this;
+					
+					//发送ajax请求获取该id的数据
+					ajax({
+						// type: 'get',
+						url: '/api/admin_one.php?id='+id,
+						success: function(data){
+							_that.username = data.username;
+							_that.password = data.password;
+							_that.usergroup = data.usergroup;
+						}
+					})
+					
+				},
+				methods: {
+					// 点击立即修改的按钮执行的函数
+					admin_save_edit: function() {
+						let username = this.username;
+						let password = this.password;
+						let usergroup = this.usergroup;
+						let id = location.href.split('=')[1];
+						ajax({
+							type: 'post',
+							url: '/api/admin_save_edit.php',
+							data: `id=${id}&username=${username}&password=${password}&usergroup=${usergroup}`,
+							success: function(data) {
+								// console.log(data);
+								//1：修改成功，跳转到列表页   0：修改失败
+								if(data ==1) {
+									alert('修改成功！');
+									location.href = 'admin_list.html';
+								}else{
+									alert('修改失败！');
+								}
+							}
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

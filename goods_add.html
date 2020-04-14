@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>新增商品</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>新增商品</span>
+						</div>
+						<div class="text item" id="admin_add">
+							<p>
+								<span>*</span> 所属分类：
+								<el-select v-model="category" placeholder="请选择分类" size="small">
+									<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+							</p>
+							<p><span>*</span> 商品条形码：<el-input v-model="code" size="small"></el-input>
+							</p>
+							<p><span>*</span> 商品名称：<el-input v-model="name" size="small"></el-input>
+							</p>
+							<p><span>*</span> 成本价：<el-input v-model="costprice" size="small"></el-input>
+							</p>
+							<p> 商品售价：<el-input v-model="price" size="small"></el-input>
+							</p>
+							<p> 市场价：<el-input v-model="saleprice" size="small"></el-input>
+							</p>
+							<p><span>*</span> 入库数量：<el-input v-model="num" size="small"></el-input>
+							</p>
+							<p> 商品重量：<el-input v-model="weight" size="small"></el-input>
+							</p>
+							<p><span>*</span> 是否促销：
+								<el-radio-group v-model="saled">
+									<el-radio :label="1">启用</el-radio>
+									<el-radio :label="0">禁用</el-radio>
+								</el-radio-group>
+							</p>
+
+
+							<p> 商品简介：<el-input v-model="introduce" type="textarea" size="small"></el-input>
+							</p>
+
+
+							<p>
+								<el-button type="primary" @click="goods_add">添加商品</el-button>
+							</p>
+						</div>
+					</el-card>
+				</el-main>
+
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					options: [{
+						label: '--顶级分类--',
+						value: 0
+					}],
+					category: '',
+					code: '',
+					name: '',
+					costprice: 0,
+					// price: '',
+					// saleprice: '',
+					num: 1,
+					weight: 0,
+					saled: 0,
+					introduce: ''
+					
+				},
+				methods: {
+					// 点击添加商品按钮执行的函数
+					goods_add: function(){
+						var category = this.category;
+						var code = this.code;
+						var name = this.name;
+						var costprice = this.costprice;
+						var price = this.price;
+						var saleprice = this.saleprice;
+						var num = this.num;
+						var weight = this.weight;
+						var saled = this.saled;
+						var introduce = this.introduce;
+						ajax({
+							type: 'post',
+							url: '/api/goods_add.php',
+							data: `category=${category}&code=${code}&name=${name}&costprice=${costprice}&price=${price}&saleprice=${saleprice}&num=${num}&weight=${weight}&saled=${saled}&introduce=${introduce}`,
+							success: function(data) {
+								if(data.errcode == 0) {
+									alert(data.msg);
+									location.href = 'goods_list.html';
+								}else{
+									alert(data.msg);
+								}
+							}
+						})
+
+					}
+					
+				},
+				mounted: function(){
+					var _that = this;
+					ajax({
+						url: '/api/category_name.php',
+						success: function(data) {
+							// console.log(data);
+							_that.options = _that.options.concat(data);
+						}
+					})
+				},
+				computed: {
+					price: function() {
+						return this.costprice * 8;
+					},
+					saleprice: function() {
+						return this.price * 1.2;
+					}
+				}
+				
+			})
+		</script>
+	</body>
+</html>

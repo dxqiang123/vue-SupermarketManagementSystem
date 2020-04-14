@@ -1,0 +1,157 @@
+@charset 'utf-8';
+html,
+body,
+#app,
+.el-container {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+.el-aside {
+	background: #343633;
+	color: #eee;
+	overflow: hidden;
+}
+
+.el-aside>h1 {
+	color: #b8bab7;
+	text-align: center;
+	font: 24px/60px 微软雅黑;
+
+}
+
+.el-aside>p {
+	text-align: right;
+	padding-right: 16px;
+	font: 12px/20px 微软雅黑;
+}
+
+.el-aside a:link,
+.el-aside a:visited {
+	color: #eee;
+}
+
+.el-aside a:hover {
+	color: #fff;
+	font-weight: bold;
+}
+
+.el-menu {
+	background: transparent;
+	margin-left: 20px;
+	border: 0;
+}
+
+.el-submenu__title {
+	background: linear-gradient(to bottom, #6eb000, #4e9a00);
+	line-height: 32px;
+	height: 32px;
+	border-radius: 6px 0 0 6px;
+	color: #b5d288;
+	text-align: right;
+}
+
+.el-submenu {
+	margin-top: 10px;
+}
+
+.el-menu-item {
+	transition: none;
+	text-align: right;
+}
+
+.el-menu-item:hover {
+	background: transparent;
+}
+
+.el-submenu .el-menu-item {
+	line-height: 30px;
+	height: 30px;
+	padding-right: 38px;
+}
+
+#main {
+	background: #e4e6e3;
+}
+
+.el-header>h1 {
+	font-size: 24px;
+	margin-bottom: 0;
+	color: #2f3243;
+}
+
+.el-header>p {
+	color: #a6a8a9;
+}
+
+.el-footer>p {
+	font: 12px/44px 微软雅黑;
+	color: #949899;
+	border-top: 1px solid #cdcfcc;
+}
+
+.el-card {
+	border: 1px solid #ccc;
+}
+
+.el-card__header {
+	background: #d7d9d6;
+	border-bottom: 1px solid #ccc;
+	font-size: 20px;
+	line-height: 22px;
+	font-weight: bold;
+}
+
+
+/* 添加账户 */
+#admin_add{
+	line-height: 2em;
+	width: 300px;
+}
+#admin_add>p>span{
+	color:red;
+	font-weight:bold;
+}
+
+
+/* 商品分类: */
+#search{
+	overflow: hidden; 
+}
+#search>span{
+	font-size: 14px;
+	line-height: 28px;
+}
+#search div{
+	margin-right: 20px;
+}
+#search>*{
+	float:left;
+}
+
+
+#search .el-input--mini{
+	width: 200px;
+}
+
+
+.el-table{
+	border-top: 1px solid #ccc;
+	margin: 20px 0;
+}
+
+.el-icon-edit, .el-icon-delete{
+	cursor:pointer;
+	font-size: 20px;
+}
+.el-icon-edit{
+	color: #909399;
+}
+.el-icon-delete{
+	color: #F56C6C;
+}

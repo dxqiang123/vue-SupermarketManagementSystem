@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<link rel="stylesheet" href="./css/index.css">
+		<script src="./js/ajax.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<el-container id="main">
+				<el-header height="100px">
+					<h1>欢迎您 admin</h1>
+					<p>查看所有分类列表</p>
+				</el-header>
+
+				<el-main>
+					<el-card class="box-card">
+						<div slot="header" class="clearfix">
+							<span>分类列表</span>
+						</div>
+						<div class="text item">
+
+							<el-table :data="tableData" style="width: 100%">
+								<el-table-column label="分类名称">
+									<template slot-scope="scope">
+										<span>{{ scope.row.label }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="管理">
+									<template slot-scope="scope">
+										<el-button size="mini" @click="cate_edit(scope.row.value)">修改</el-button>
+										<el-button size="mini" type="danger" @click="cate_del(scope.row.value)">删除</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+
+						</div>
+					</el-card>
+				</el-main>
+
+				<el-footer>
+					<p>&copy; Copyright 2018 华联超市管理系统</p>
+				</el-footer>
+			</el-container>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					tableData: []
+				},
+				mounted: function() {
+					var _that = this;
+					ajax({
+						url: '/api/category_name.php',
+						success: function(data) {
+							_that.tableData = data;
+						}
+					})
+				},
+				methods: {
+					cate_edit: function(id) {
+						location.href = 'category_edit.html?id=' + id;
+
+					},
+					cate_del: function(id) {
+						var _that = this;
+						ajax({
+							url: '/api/cate_del.php?id=' + id,
+							success: function(data) {
+								// console.log(data);
+								if (data.errcode == 0) {
+									alert(data.msg);
+									ajax({
+										url: '/api/category_name.php',
+										success: function(data) {
+											_that.tableData = data;
+										}
+									})
+								} else {
+									alert(data.msg);
+								}
+							}
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
